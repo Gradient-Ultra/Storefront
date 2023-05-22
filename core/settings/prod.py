@@ -3,6 +3,8 @@ import os
 from .common import *
 from .common import BASE_DIR
 
+print('Inside prod.py settings')
+
 SECRET_KEY = os.environ["SECRET_KEY"]
 
 ALLOWED_HOSTS = [os.environ['WEBSITE_HOSTNAME']] if 'WEBSITE_HOSTNAME' in os.environ else []
@@ -25,28 +27,23 @@ DATABASES = {
 }
 
 
-# cache settings
-REDIS_PASSWORD = os.environ['REDIS_PASSWORD']
-REDIS_URL = os.environ['REDIS_URL']
-
 # redis://username:password@host:port/db
-CELERY_BROKER_URL = f'redis://default:{REDIS_PASSWORD}@{REDIS_URL}'
+CELERY_BROKER_URL = os.environ['CELERY_BROKER_URL']
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "TIMEOUT": 10 * 60,
-        "LOCATION": f"redis://default@{REDIS_URL}",
+        "LOCATION": os.environ['REDIS_URL'],
         "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "PASSWORD": REDIS_PASSWORD,
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
         }
     }
 }
 
 # email settings
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = os.environ["SMTP_SERVER"]
-EMAIL_HOST_USER = os.environ["SMTP_LOGIN"]
-EMAIL_HOST_PASSWORD = os.environ["SMTP_PASSWORD"]
-EMAIL_PORT = os.environ["SMTP_PORT"]
+#EMAIL_HOST = os.environ["SMTP_SERVER"]
+#EMAIL_HOST_USER = os.environ["SMTP_LOGIN"]
+#EMAIL_HOST_PASSWORD = os.environ["SMTP_PASSWORD"]
+#EMAIL_PORT = os.environ["SMTP_PORT"]
